@@ -1,0 +1,47 @@
+// List Component
+import React, { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+
+const List = ({ value, onUpdate }) => {
+  const [items, setItems] = useState(value || []);
+
+  const handleInputChange = (event) => {
+    if (event.key === "Enter" && event.target.value.trim() !== "") {
+      const newItem = {
+        id: uuidv4(),
+        label: event.target.value.trim(),
+      };
+      setItems([...items, newItem]);
+      onUpdate([...items, newItem]);
+      event.target.value = "";
+    }
+  };
+
+  const handleRemoveItem = (itemId) => {
+    const updatedItems = items.filter((item) => item.id !== itemId);
+    setItems(updatedItems);
+    onUpdate(updatedItems);
+  };
+
+  return (
+    <div className="list">
+      {items.map((item) => (
+        <div key={item.id} className="list-item">
+          {item.label}
+          <button className="rem-btn btn" onClick={() => handleRemoveItem(item.id)}>
+            &times;
+          </button>
+        </div>
+      ))}
+      <span className="label">Ingredients</span>
+      <input
+        type="text"
+        className="list-input"
+        placeholder="Type an item and press Enter to add to the list"
+        onKeyDown={handleInputChange}
+      />
+    </div>
+  );
+};
+
+export default List;
